@@ -3,9 +3,13 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_ollama import OllamaEmbeddings
 from langchain_chroma import Chroma
+import shutil
 
 PDF_DIR = "./pdfs"
 CHROMA_DIR = "./chroma_db"
+
+if os.path.exists(CHROMA_DIR):
+    shutil.rmtree(CHROMA_DIR)
 
 all_docs = []
 for file in os.listdir(PDF_DIR):
