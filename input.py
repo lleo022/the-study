@@ -1,12 +1,10 @@
 import os
+import shutil
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_ollama import OllamaEmbeddings
 from langchain_chroma import Chroma
-import shutil
-
-PDF_DIR = "./pdfs"
-CHROMA_DIR = "./chroma_db"
+from config import PDF_DIR, CHROMA_DIR, CHUNK_SIZE, CHUNK_OVERLAP, EMBED_MODEL
 
 if os.path.exists(CHROMA_DIR):
     shutil.rmtree(CHROMA_DIR)
@@ -21,13 +19,13 @@ for file in os.listdir(PDF_DIR):
 print(f"Total pages loaded: {len(all_docs)}")
 
 splitter = RecursiveCharacterTextSplitter(
-    chunk_size=500,
-    chunk_overlap=50
+    chunk_size=CHUNK_SIZE,
+    chunk_overlap=CHUNK_OVERLAP
 )
 chunks = splitter.split_documents(all_docs)
 print(f"Total chunks: {len(chunks)}")
 
-embeddings = OllamaEmbeddings(model="nomic-embed-text")
+embeddings = OllamaEmbeddings(model=EMBED_MODEL)
 db = Chroma.from_documents(
     chunks,
     embeddings,
